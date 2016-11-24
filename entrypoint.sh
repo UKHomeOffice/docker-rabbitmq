@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "${SET_RABBITMQ_NODENAME}" == "true" ]]; then
-  if [ ! -z ${RABBITMQ_POD_IP} ]; then
+  if [ -z "${RABBITMQ_POD_IP}" ]; then
     echo "RABBITMQ_POD_IP env var not set"
     exit 1
   fi
