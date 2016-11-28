@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+ labels:
+   name: rabbitmq1-0
+ name: rabbitmq1-0
+spec:
+ ports:
+   - name: epmd
+     port: 4369
+     targetPort: 4369
+   - name: amqpwithtls
+     port: 5671
+     targetPort: 5671
+   - name: amqpwithouttls
+     port: 5672
+     targetPort: 5672
+   - name: management
+     port: 15672
+     targetPort: 15672
+   - name: clustering
+     port: 25672
+     targetPort: 25672
+ selector:
+   name: rabbitmq1

@@ -1,0 +1,59 @@
+apiVersion: apps/v1alpha1
+kind: PetSet
+metadata:
+  labels:
+    app: rabbitmq2
+  name: rabbitmq2
+spec:
+  serviceName: "rabbitmq2"
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmq2
+  template:
+    metadata:
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+      labels:
+        name: rabbitmq2
+        app: rabbitmq2
+    spec:
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: eu-west-1b
+      containers:
+      - name: rabbitmq2
+        image: quay.io/ukhomeofficedigital/rabbitmq:v3.6.5
+        ports:
+        - containerPort: 5671
+        - containerPort: 5672
+        - containerPort: 15672
+        - containerPort: 25672
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512M
+        env:
+        - name: RABBITMQ_ERLANG_COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq
+              key: erlang.cookie
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/rabbitmq
+        - name: rabbit
+          mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: config-volume
+          configMap:
+            name: rabbitmq
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbit
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: gp2-1b
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi

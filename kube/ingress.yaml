@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/tls-acme: "false"
+  name: rabbitmq
+spec:
+  rules:
+  - host: rabbitmq-{{.KUBE_NAMESPACE}}.notprod.homeoffice.gov.uk
+    http:
+      paths:
+      - backend:
+          serviceName: rabbitmq1-0
+          servicePort: 15672
+        path: /
